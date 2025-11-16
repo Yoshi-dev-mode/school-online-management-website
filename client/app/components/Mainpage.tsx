@@ -3,21 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-
-export const food_pictures = [
-  { name: "ADOBO", img: "/example-foods/adobo.png", price: "₱120", alt: "adobo pic", type:"food"},
-  { name: "COFFEE", img: "/example-foods/coffee.png", price: "₱130", alt: "coffee pic", type:"water"},
-  { name: "FRIED BUFALO", img: "/example-foods/fried-bufalo.png", price: "₱124", alt: "fried buffalo pic", type:"food"},
-  { name: "FRIED CHICKEN", img: "/example-foods/fried-chicken.png", price: "₱90", alt: "fried chicken pic", type:"food"},
-  { name: "MILK TEA", img: "/example-foods/milk-tea.png", price: "₱90", alt: "milk tea pic", type:"water"},
-  { name: "SIOMAI RICE", img: "/example-foods/siomai-rice.png", price: "₱90", alt: "siomai rice pic", type:"food"},
-  { name: "FRIES", img: "/example-foods/potato-corner.png", price: "₱90", alt: "potato corner pic", type:"food"},
-  { name: "LUGAW", img: "/example-foods/lugaw.png", price: "₱90", alt: "lugaw pic", type:"food"},
-  { name: "TINOLA", img: "/example-foods/tinola.png", price: "₱90", alt: "tinola pic", type:"water"},
-];
+import { useContext } from "react";
+import { Context } from "../layout";
 
 
 export default function Mainpage() {
+  const {food_pictures} = useContext(Context) || [];
   const [search, setSearch] = useState("");
 
   // ✅ Filter list based on search input
@@ -56,8 +47,10 @@ export default function Mainpage() {
       {/* Food Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredFoods.length > 0 ? (
-          filteredFoods.map((food, i) => (
-            <Link href={`/chosen_food/${i}`} key={i}>
+          filteredFoods.map((food) => {
+            const original_index = food_pictures.indexOf(food)
+            return (
+            <Link href={`/chosen_food/${original_index}`} key={original_index}>
               <div
                 className="relative group overflow-hidden rounded-2xl shadow-lg cursor-pointer"
               >
@@ -78,7 +71,7 @@ export default function Mainpage() {
                 </div>
               </div>
             </Link>
-          ))
+          )})
         ) : (
           <p className="text-gray-500 col-span-full text-center text-lg">
             No food found.

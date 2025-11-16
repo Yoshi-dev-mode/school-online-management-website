@@ -1,36 +1,46 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 export default function Sidebar() {
+  const pathname = usePathname();
+
+  const menuItems = [
+    { name: "Home", icon: "/home.png", href: "/" },
+    { name: "My Cart", icon: "/shopping-cart.png", href: "/mycart" },
+    { name: "History", icon: "/history.png", href: "/history" },
+    { name: "Favorites", icon: "/heart.png", href: "/favorites" },
+    { name: "Food Partner", icon: "/fork.png", href: "/food-partner" },
+    { name: "Logout", icon: "/logout.png", href: "/logout" },
+  ];
+
   return (
     <aside className="pt-3 shadow-md sticky top-0 h-screen">
-        <div className="flex items-center p-5">
-            <Link href="/"><Image src="/logo.png" alt="Logo" width={150} height={30}/></Link>
-        </div>
-        <div className="flex items-center pr-15 pl-10 py-4 cursor-pointer">
-            <Image src="/home.png" width={20} height={20} alt="Home"/>
-            <h3 className="ml-3">Home</h3>
-        </div>
-        <div className="flex items-center pr-15 pl-10 py-4 cursor-pointer">
-            <Image src="/shopping-cart.png" width={20} height={20} alt="Home"/>
-            <h3 className="ml-3">My Cart</h3>
-        </div>
-        <div className="flex items-center pr-15 pl-10 py-4 cursor-pointer">
-            <Image src="/history.png" width={20} height={20} alt="Home"/>
-            <h3 className="ml-3">History</h3>
-        </div>
-        <div className="flex items-center pr-15 pl-10 py-4 cursor-pointer">
-            <Image src="/heart.png" width={20} height={20} alt="Home"/>
-            <h3 className="ml-3">Favorites</h3>          
-        </div>
-        <div className="flex items-center pr-15 pl-10 py-4 cursor-pointer">
-            <Image src="/fork.png" width={20} height={20} alt="Home"/>
-            <h3 className="ml-3">Food Partner</h3>
-        </div>
-        <div className="flex items-center pr-15 pl-10 py-4 cursor-pointer">
-            <Image src="/logout.png" width={20} height={20} alt="Home"/>
-            <h3 className="ml-3">Logout</h3>  
-        </div>
-    
+      <div className="flex items-center p-5">
+        <Link href="/">
+          <Image src="/logo.png" alt="Logo" width={150} height={30} />
+        </Link>
+      </div>
+
+      {menuItems.map((item) => {
+        const isActive = pathname === item.href;
+        return (
+          <Link
+            key={item.name}
+            href={item.href}
+            className={`flex items-center px-10 py-4 cursor-pointer transition ${
+              isActive
+                ? "bg-red-100 border-l-4 border-red-600 text-main-red font-semibold"
+                : "hover:bg-gray-100"
+            }`}
+          >
+            <Image src={item.icon} width={20} height={20} alt={item.name} />
+            <h3 className="ml-3">{item.name}</h3>
+          </Link>
+        );
+      })}
     </aside>
   );
 }
