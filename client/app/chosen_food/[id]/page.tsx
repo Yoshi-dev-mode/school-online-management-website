@@ -8,7 +8,7 @@ import { Context } from "@/app/layout";
 import { useToast } from "@/app/components/Toast";
 
 export default function ({ params }: any) {
-  const { food_pictures, addToCart, favorites, toggleFavorite } = useContext(Context)!;
+  const { food_pictures, addToCart, toggleFavorite } = useContext(Context)!;
   const { id }: any = use(params);
   const index = parseInt(id);
   const { showToast } = useToast();
@@ -20,12 +20,12 @@ export default function ({ params }: any) {
   const food = food_pictures[index];
   const [quantity, setQuantity] = useState(1);
 
-  const totalPrice = quantity * parseInt(food.price.replace("₱", ""));
+  const totalPrice = quantity * food.price;
   const isFavorite = food.favorite;
 
 
   const handleAddToCart = () => {
-    addToCart({ ...food, quantity });
+    addToCart(food,quantity);
     showToast("Successfully added to cart!", "green");
   };
 

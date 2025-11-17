@@ -15,6 +15,9 @@ export default function CheckoutPage() {
   const context = useContext(Context);
   const [selectedPayment, setSelectedPayment] = useState<string>('');
   const [pickupTime, setPickupTime] = useState<string>('');
+  const { addOrder }:any = context;
+  const [date, time] = pickupTime.split("T");
+  console.log(pickupTime)
 
 
   if (!context) return null;
@@ -22,10 +25,9 @@ export default function CheckoutPage() {
   const { selectedItems } = context;
 
   const [tip, setTip] = useState<number>(0);
-  const [pickupNow, setPickupNow] = useState(true);
-
+  
   const total = selectedItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace("₱", ""));
+    const price = item.price
     return sum + price * item.quantity;
   }, 0);
 
@@ -51,7 +53,7 @@ export default function CheckoutPage() {
           {/* Cart Summary */}
         <div className="bg-white p-4 rounded-lg shadow-sm space-y-4">
             {selectedItems.map(item => {
-              const price = parseFloat(item.price.replace("₱", ""));
+              const price = item.price;
               return (
                 <div key={item.name} className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
@@ -145,9 +147,42 @@ export default function CheckoutPage() {
           {/* Total & Confirm */}
           <div className="bg-white p-4 rounded-lg shadow-sm flex justify-between items-center">
             <p className="font-bold text-lg">Total: ₱{(total + tip).toFixed(2)}</p>
-            <button className="border border-main-red text-main-red px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-red-50 transition">
-              Confirm Order
-            </button>
+            <Link href={"/"}>
+            <button
+  className="border border-main-red text-main-red px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-red-50 transition"
+  onClick={() => {
+    if (!selectedPayment) {
+      alert("Please select a payment method");
+      return;
+    }
+    if (!pickupTime) {
+      alert("Please set pickup time");
+      return;
+    }
+
+    const order = {
+      id: Date.now(), // unique
+      items: selectedItems,
+      total: total + tip,
+      tip,
+      payment: selectedPayment,
+      date,
+      time,
+      status: "pending",
+      createdAt: new Date().toISOString()
+    };
+
+    addOrder(order);  // SAVE ORDER TO CONTEXT
+
+    alert("Order submitted!");
+
+    // OPTIONAL: redirect to admin page
+    // router.push("/admin");
+  }}
+>
+  Confirm Order
+</button>
+</Link>
           </div>
         </section>
       )}

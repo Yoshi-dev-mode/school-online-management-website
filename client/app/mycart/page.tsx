@@ -11,7 +11,7 @@ export default function CartPage() {
   const context = useContext(Context);
   if (!context) return null;
 
-  const { cart, removeFromCart, addToCart } = context;
+  const { cart, removeFromCart, addToCart} = context;
 
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -41,7 +41,7 @@ export default function CartPage() {
 
   const total = cart.reduce((sum, item) => {
     if (!checkedItems.includes(item.name)) return sum;
-    const price = parseFloat(item.price.replace("₱", ""));
+    const price = item.price;
     return sum + price * item.quantity;
   }, 0);
 
@@ -61,8 +61,8 @@ export default function CartPage() {
         {cart.length > 0 ? (
           <section className="w-full space-y-4">
             <AnimatePresence>
-              {cart.map((item, index) => {
-                const price = parseFloat(item.price.replace("₱", ""));
+              {cart.map((item) => {
+                const price = item.price;
                 return (
                   <motion.div
                     key={item.name}

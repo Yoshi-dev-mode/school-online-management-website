@@ -12,12 +12,12 @@ export default function Mainpage() {
   const [search, setSearch] = useState("");
 
   // ✅ Filter list based on search input
-  const filteredFoods = food_pictures.filter((food) =>
+  const filteredFoods = food_pictures.filter((food:any) =>
     food.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <section className="flex flex-col justify-center w-full ">
+    <section>
       {/* Header */}
       <div className="flex items-center">
         <Image src="/shopping-bag.png" height={30} width={30} alt="shopping bag" />
@@ -47,7 +47,7 @@ export default function Mainpage() {
       {/* Food Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredFoods.length > 0 ? (
-          filteredFoods.map((food) => {
+          filteredFoods.map((food:any) => {
             const original_index = food_pictures.indexOf(food)
             return (
             <Link href={`/chosen_food/${original_index}`} key={original_index}>
@@ -67,7 +67,7 @@ export default function Mainpage() {
                 {/* Overlay with Name + Price */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-semibold opacity-0 group-hover:opacity-100 transition duration-500" >
                   <span className="text-2xl">{food.name}</span>
-                  <span className="text-lg text-main-red">{food.price}</span>
+                  <span className="text-lg text-main-red">₱{food.price}</span>
                 </div>
               </div>
             </Link>
