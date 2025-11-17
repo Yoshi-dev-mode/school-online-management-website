@@ -27,6 +27,7 @@ interface FoodItem {
   type: string;
   favorite: boolean;
   quantity: number;
+  partner: string;
 }
 
 interface ContextType {
@@ -45,16 +46,17 @@ export const Context = React.createContext<ContextType | null>(null);
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [food_pictures, setFoodPictures] = useState<FoodItem[]>([
-    { id: 0, name: "ADOBO", img: "/example-foods/adobo.png", price: 120, alt: "adobo pic", type: "food", favorite: false, quantity: 0 },
-    { id: 1, name: "COFFEE", img: "/example-foods/coffee.png", price: 130, alt: "coffee pic", type: "water", favorite: false, quantity: 0 },
-    { id: 2, name: "FRIED BUFALO", img: "/example-foods/fried-bufalo.png", price: 124, alt: "fried buffalo pic", type: "food", favorite: false, quantity: 0 },
-    { id: 3, name: "FRIED CHICKEN", img: "/example-foods/fried-chicken.png", price: 90, alt: "fried chicken pic", type: "food", favorite: false, quantity: 0 },
-    { id: 4, name: "MILK TEA", img: "/example-foods/milk-tea.png", price: 90, alt: "milk tea pic", type: "water", favorite: false, quantity: 0 },
-    { id: 5, name: "SIOMAI RICE", img: "/example-foods/siomai-rice.png", price: 90, alt: "siomai rice pic", type: "food", favorite: false, quantity: 0 },
-    { id: 6, name: "FRIES", img: "/example-foods/potato-corner.png", price: 90, alt: "potato corner pic", type: "food", favorite: false, quantity: 0 },
-    { id: 7, name: "LUGAW", img: "/example-foods/lugaw.png", price: 90, alt: "lugaw pic", type: "food", favorite: false, quantity: 0 },
-    { id: 8, name: "TINOLA", img: "/example-foods/tinola.png", price: 90, alt: "tinola pic", type: "water", favorite: false, quantity: 0 },
+    { id: 0, name: "ADOBO", img: "/example-foods/adobo.png", price: 120, alt: "adobo pic", type: "food", favorite: false, quantity: 0, partner: "SpotG"},
+    { id: 1, name: "COFFEE", img: "/example-foods/coffee.png", price: 130, alt: "coffee pic", type: "water", favorite: false, quantity: 0, partner: "360 Coffee" },
+    { id: 2, name: "FRIED BUFALO", img: "/example-foods/fried-bufalo.png", price: 124, alt: "fried buffalo pic", type: "food", favorite: false, quantity: 0, partner: "SpotG" },
+    { id: 3, name: "FRIED CHICKEN", img: "/example-foods/fried-chicken.png", price: 90, alt: "fried chicken pic", type: "food", favorite: false, quantity: 0, partner: "SpotG" },
+    { id: 4, name: "MILK TEA", img: "/example-foods/milk-tea.png", price: 90, alt: "milk tea pic", type: "water", favorite: false, quantity: 0 , partner: "360 Coffee"},
+    { id: 5, name: "SIOMAI RICE", img: "/example-foods/siomai-rice.png", price: 90, alt: "siomai rice pic", type: "food", favorite: false, quantity: 0, partner: "Theatry Eats"},
+    { id: 6, name: "FRIES", img: "/example-foods/potato-corner.png", price: 90, alt: "potato corner pic", type: "food", favorite: false, quantity: 0, partner: "Potato Corner" },
+    { id: 7, name: "LUGAW", img: "/example-foods/lugaw.png", price: 90, alt: "lugaw pic", type: "food", favorite: false, quantity: 0, partner: "Theatry Eats"},
+    { id: 8, name: "TINOLA", img: "/example-foods/tinola.png", price: 90, alt: "tinola pic", type: "water", favorite: false, quantity: 0, partner: "SpotG"},
   ]);
+  
 
   const [cart, setCart] = useState<FoodItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<FoodItem[]>([]);
