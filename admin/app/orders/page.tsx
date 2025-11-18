@@ -1,39 +1,28 @@
 'use client';
 
-import { useState, useContext } from "react";
-import { Context } from "../layout";
+import { useState} from "react";
 import Image from "next/image";
 
 export default function HistoryPage() {
   const [filter, setFilter] = useState<"All" | "Completed" | "Pending">("All");
-  const context = useContext(Context);
-
-  const {orders}:any = context
-
-  const allOrderItems = orders.flatMap((order: any) =>
-  order.items.map((item: any) => ({
-    id: order.id,
-    date: order.date || order.createdAt.split("T")[0],
-    time: order.time || order.createdAt.split("T")[1].slice(0,5),
-    status: order.status,
-    name: item.name,
-    quantity: item.quantity,
-    price: item.price,
-  }))
-);
 
 
+const [history, setHistory] = useState([
+  { date: "11/9/2025", time: "4:00PM", name: "Potato corner", quantity: 3, price: 120, status: "Completed" },
+  { date: "11/9/2025", time: "4:00PM", name: "Potato corner", quantity: 3, price: 120, status: "Pending" },
+  { date: "11/9/2025", time: "4:00PM", name: "Potato corner", quantity: 3, price: 120, status: "Completed" },
+]);
   // Filtering logic
 const filteredHistory =
   filter === "All"
-    ? allOrderItems
-    : allOrderItems.filter((item: any) => item.status.toLowerCase() === filter.toLowerCase());
+    ? history
+    : history.filter((item: any) => item.status.toLowerCase() === filter.toLowerCase());
 
   return (
     <main>
       <div className="flex items-center mb-4">
-        <Image src="/history.png" height={30} width={30} alt="shopping cart icon" />
-        <h1 className="ml-3 text-xl md:text-2xl font-semibold">History</h1>
+        <Image src="/shopping-bag.png" height={30} width={30} alt="shopping cart icon" />
+        <h1 className="ml-3 text-xl md:text-2xl font-semibold">Orders</h1>
       </div>
 
       {/* Filter Buttons */}
@@ -82,15 +71,25 @@ const filteredHistory =
                 <td className="py-3 px-2">₱{orderItem.price}</td>
                 <td className="py-3 px-2">₱{orderItem.price * orderItem.quantity}</td>
                 <td className="py-3 px-2">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      orderItem.status.toLowerCase() === "completed"
+                <select
+                    value={orderItem.status}
+                    onChange={(e) => {
+                    const newStatus = e.target.value;
+                    // Update the status in your history array (state or DB)
+                    const updatedHistory = [...history];
+                    updatedHistory[i].status = newStatus;
+                    setHistory(updatedHistory); // make sure history is in state
+                    }}
+                    className={`px-3 py-1 rounded-full text-sm font-medium focus:outline-none
+                    ${
+                        orderItem.status.toLowerCase() === "completed"
                         ? "bg-green-100 text-green-700"
                         : "bg-yellow-100 text-yellow-700"
                     }`}
-                  >
-                    {orderItem.status}
-                  </span>
+                >
+                    <option value="Completed">Completed</option>
+                    <option value="Pending">Pending</option>
+                </select>
                 </td>
               </tr>
             ))}
