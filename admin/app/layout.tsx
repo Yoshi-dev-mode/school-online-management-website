@@ -6,7 +6,7 @@ import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import { useState } from "react";
-import LoginPage from "./components/LoginPage"; // import login page
+import LoginPage from "./components/LoginPage";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,22 +18,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = (username: string, password: string) => {
-    // Example: simple auth, replace with your logic
     if (username === "admin" && password === "1234") {
       setIsLoggedIn(true);
     } else {
       alert("Invalid credentials");
     }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
   };
 
   return (
@@ -45,7 +42,7 @@ export default function RootLayout({
           </section>
         ) : (
           <section className="flex">
-            <Sidebar />
+            <Sidebar onLogout={handleLogout} />  {/* 👈 pass logout to sidebar */}
             <div className="w-full">
               <Navbar />
               {children}

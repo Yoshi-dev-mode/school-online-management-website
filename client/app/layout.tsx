@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import React, { useState } from "react";
 import { ToastProvider } from "./components/Toast";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ interface ContextType {
   setSelectedItems: (items: FoodItem[]) => void;
   orders: any[];
   addOrder: (order: any) => void;
+  setIsLoggedIn: (v: boolean) => void; 
 }
 
 export const Context = React.createContext<ContextType | null>(null);
@@ -56,13 +58,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     { id: 7, name: "LUGAW", img: "/example-foods/lugaw.png", price: 90, alt: "lugaw pic", type: "food", favorite: false, quantity: 0, partner: "Theatry Eats"},
     { id: 8, name: "TINOLA", img: "/example-foods/tinola.png", price: 90, alt: "tinola pic", type: "water", favorite: false, quantity: 0, partner: "SpotG"},
   ]);
-  
 
   const [cart, setCart] = useState<FoodItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<FoodItem[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // <-- Prototype login state
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   // ---------------- CART ------------------
-  const addToCart = (item: FoodItem, quantity: number) => {
+  const addToCart = (item: FoodItem, quantity: number = 1) => {
     setCart(prev => {
       const index = prev.findIndex(p => p.id === item.id);
 
@@ -101,7 +107,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   const addOrder = (order: any) => {
     setOrders(prev => [...prev, order]);
-    setCart([])
+    setCart([]);
+  };
+
+  // ---------- Prototype Login Handler ----------
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === "24-08955" && password === "1234") {
+      setIsLoggedIn(true); // just prototype
+    } else {
+      alert("Wrong username or password");
+    }
   };
 
   return (
@@ -117,17 +133,65 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             selectedItems,
             setSelectedItems,
             orders,
-            addOrder
+            addOrder,
+            setIsLoggedIn,
           }}
         >
           <ToastProvider>
-            <section className="flex">
-              <Sidebar />
-              <div className="w-full">
-                <Navbar />
-                {children}
-              </div>
-            </section>
+            {!isLoggedIn ? (
+  <div className="flex justify-center items-center h-screen w-full">
+    <div className="flex w-4/5 max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden">
+      {/* Left: Image */}
+      <div className="w-1/2 hidden md:block">
+        <img
+          src="/bsu.jpg" // Replace with any image you want
+          alt="Food"
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      {/* Right: Login Form */}
+      <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+        <h2 className="text-2xl mb-6 font-bold text-center">Login</h2>
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col space-y-4"
+        >
+          <input
+            type="text"
+            placeholder="SR-Code"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+          <button
+            type="submit"
+            className="bg-main-red text-white cursor-pointer py-2 rounded w-full hover:bg-red-200"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+): (
+    <section className="flex">
+    <Sidebar />
+    <div className="w-full">
+      <Navbar />
+      {children}
+    </div>
+  </section>
+)}
+
+
           </ToastProvider>
         </Context.Provider>
       </body>

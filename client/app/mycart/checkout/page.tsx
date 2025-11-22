@@ -4,6 +4,8 @@ import { useContext, useState } from "react";
 import { Context } from "@/app/layout";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 const paymentMethods =[
     {id:0, name: 'Cash payment', img: '/payment-method/payment-method.png'},
@@ -12,6 +14,7 @@ const paymentMethods =[
 ]
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const context = useContext(Context);
   const [selectedPayment, setSelectedPayment] = useState<string>('');
   const [pickupTime, setPickupTime] = useState<string>('');
@@ -147,7 +150,6 @@ export default function CheckoutPage() {
           {/* Total & Confirm */}
           <div className="bg-white p-4 rounded-lg shadow-sm flex justify-between items-center">
             <p className="font-bold text-lg">Total: ₱{(total + tip).toFixed(2)}</p>
-            <Link href={"/"}>
             <button
   className="border border-main-red text-main-red px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-red-50 transition"
   onClick={() => {
@@ -161,19 +163,21 @@ export default function CheckoutPage() {
     }
 
     const order = {
-      id: Date.now(), // unique
-      items: selectedItems,
-      total: total + tip,
-      tip,
-      payment: selectedPayment,
-      date,
-      time,
-      status: "pending",
-      createdAt: new Date().toISOString()
-    };
+  id: Date.now(), 
+  items: selectedItems,
+  total: total + tip,
+  tip,
+  payment: selectedPayment,
+  date,
+  time,
+  status: "pending",
+  createdAt: new Date().toISOString()
+};
 
-    addOrder(order);  // SAVE ORDER TO CONTEXT
+addOrder(order);
 
+// Redirect to receipt page
+router.push(`/receipt/${order.id}`);
     alert("Order submitted!");
 
     // OPTIONAL: redirect to admin page
@@ -182,7 +186,6 @@ export default function CheckoutPage() {
 >
   Confirm Order
 </button>
-</Link>
           </div>
         </section>
       )}

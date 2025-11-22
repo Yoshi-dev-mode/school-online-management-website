@@ -1,12 +1,21 @@
 "use client";
 
+import { useContext } from "react";
+import { Context } from "@/app/layout";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const ctx = useContext(Context);
 
+  if (!ctx) return null;
+
+  const { setIsLoggedIn } = ctx;
+
+  // DONT DELETE, NOT TEMPORARY
   const menuItems = [
     { name: "Home", icon: "/home.png", href: "/" },
     { name: "My Cart", icon: "/shopping-cart.png", href: "/mycart" },
@@ -26,6 +35,23 @@ export default function Sidebar() {
 
       {menuItems.map((item) => {
         const isActive = pathname === item.href;
+
+        if (item.name === "Logout") {
+          return (
+            <button
+              key={item.name}
+              onClick={() => {
+                setIsLoggedIn(false);  // LOG OUT
+                router.push("/");      // SHOW LOGIN SCREEN AGAIN
+              }}
+              className="flex items-center px-10 py-4 w-full text-left hover:bg-gray-100"
+            >
+              <Image src={item.icon} width={20} height={20} alt={item.name} />
+              <h3 className="ml-3">{item.name}</h3>
+            </button>
+          );
+        }
+
         return (
           <Link
             key={item.name}
