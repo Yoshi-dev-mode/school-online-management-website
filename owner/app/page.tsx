@@ -13,7 +13,7 @@ export default function LoginPage() {
 
   // Temporary list of allowed accounts for prototype
   const allowedUsers = [
-    { id: "admin001", pass: "canteen123" },
+    { id: "1", pass: "1" },
     { id: "cashier01", pass: "foodserve" },
     { id: "teacher05", pass: "welcome" },
   ];

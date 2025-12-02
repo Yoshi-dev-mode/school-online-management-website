@@ -21,19 +21,73 @@ export default function CheckoutPage() {
   const { addOrder }:any = context;
   const [date, time] = pickupTime.split("T");
   console.log(pickupTime)
-
-
   if (!context) return null;
-
   const { selectedItems } = context;
-
   const [tip, setTip] = useState<number>(0);
-  
   const total = selectedItems.reduce((sum, item) => {
     const price = item.price
     return sum + price * item.quantity;
   }, 0);
 
+async function payment() {
+  if (!selectedPayment) {
+    alert("Please select a payment method");
+    return;
+  }
+
+  if (!pickupTime) {
+    alert("Please set pickup time");
+    return;
+  }
+
+  // FIX DATE & TIME PARSING
+  let date = "";
+  let time = "";
+
+  if (pickupTime) {
+    const dt = new Date(pickupTime);
+
+    date = dt.toLocaleDateString("en-CA"); // 2025-01-12
+    time = dt.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
+  const order = {
+    id: Date.now(),
+    items: selectedItems,
+    total: total + tip,
+    tip,
+    payment: selectedPayment,
+    date,
+    time,
+    status: "pending",
+    createdAt: new Date().toISOString(),
+  };
+
+  // SEND TO BACKEND
+  try {
+    const res = await fetch("http://127.0.0.1:8000/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(order),
+    });
+
+    const data = await res.json();
+    console.log("Order saved:", data);
+
+    addOrder(order);
+    router.push(`/receipt/${order.id}`);
+    return;
+  } catch (err) {
+    console.error("Failed to send order:", err);
+  }
+}
+
+
+  
   return (
     <main className="min-h-screen p-6 ">
         <div className="flex items-center mb-4">
@@ -43,12 +97,12 @@ export default function CheckoutPage() {
       {selectedItems.length === 0 ? (
         <section className="flex flex-col items-center">
           <Image src="/empty-cart.png" width={200} height={200} alt="Empty Cart" />
-          <h2 className="text-xl font-semibold mt-4 text-gray-600">Your cart is empty</h2>
+          <h2 className="text-xl font-semibold mt-4 text-gray-600">Please check some box to Checkout</h2>
           <Link
-            href="/"
+            href="/mycart"
             className="mt-6 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
           >
-            Back to Menu
+            Back to My Cart
           </Link>
         </section>
       ) : (
@@ -60,7 +114,7 @@ export default function CheckoutPage() {
               return (
                 <div key={item.name} className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
-                    <img src={item.img} alt={item.alt} className="w-16 h-16 rounded-lg object-cover border" />
+                    <img src={item.image} alt={item.alt} className="w-16 h-16 rounded-lg object-cover border" />
                     <div>
                       <h2 className="font-semibold">{item.name}</h2>
                       <p className="text-gray-600">{item.quantity} x {item.price}</p>
@@ -152,38 +206,8 @@ export default function CheckoutPage() {
             <p className="font-bold text-lg">Total: ₱{(total + tip).toFixed(2)}</p>
             <button
   className="border border-main-red text-main-red px-6 py-2 rounded-lg font-semibold cursor-pointer hover:bg-red-50 transition"
-  onClick={() => {
-    if (!selectedPayment) {
-      alert("Please select a payment method");
-      return;
-    }
-    if (!pickupTime) {
-      alert("Please set pickup time");
-      return;
-    }
-
-    const order = {
-  id: Date.now(), 
-  items: selectedItems,
-  total: total + tip,
-  tip,
-  payment: selectedPayment,
-  date,
-  time,
-  status: "pending",
-  createdAt: new Date().toISOString()
-};
-
-addOrder(order);
-
-// Redirect to receipt page
-router.push(`/receipt/${order.id}`);
-    alert("Order submitted!");
-
-    // OPTIONAL: redirect to admin page
-    // router.push("/admin");
-  }}
->
+  onClick={payment}
+  >
   Confirm Order
 </button>
           </div>

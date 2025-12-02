@@ -14,6 +14,7 @@ export default function ReceiptPage() {
   if (!context) return null;
 
   const order = context.orders.find(o => o.id === orderId);
+  console.log(order)
 
   if (!order) return <p className="p-6">Order not found</p>;
 
@@ -46,6 +47,10 @@ export default function ReceiptPage() {
           ))}
         </div>
         <hr className="my-2"/>
+        <div className="flex justify-between text-md">
+          <span>Tip</span>
+          <span>₱{order.tip.toFixed(2)}</span>
+        </div>
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
           <span>₱{order.total.toFixed(2)}</span>

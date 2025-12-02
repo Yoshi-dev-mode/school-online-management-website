@@ -7,25 +7,28 @@ import { motion } from "framer-motion";
 import { Context } from "@/app/layout";
 import { useToast } from "@/app/components/Toast";
 
-export default function ({ params }: any) {
-  const { food_pictures, addToCart, toggleFavorite } = useContext(Context)!;
-  const { id }: any = use(params);
-  const index = parseInt(id);
+export default function ChosenFood({ params }: any) {
+  const { food_pictures, addToCart, toggleFavorite } = useContext(Context) || {};
   const { showToast } = useToast();
 
-  if (isNaN(index) || index < 0 || index >= food_pictures.length) {
-    return <div>Food not found.</div>;
-  }
+  // ⚡ Unwrap the params Promise
+  const { id }:any = use(params);
+  const foodId = parseInt(id);
 
-  const food = food_pictures[index];
+  // Guard against undefined food_pictures
+  if (!food_pictures) return <p className="text-center mt-10">Loading...</p>;
+
+  // Find the food by id
+  const food = food_pictures.find((f: any) => f.id === foodId);
+
+  if (!food) return <div>Food not found.</div>;
+
   const [quantity, setQuantity] = useState(1);
-
   const totalPrice = quantity * food.price;
   const isFavorite = food.favorite;
 
-
   const handleAddToCart = () => {
-    addToCart(food,quantity);
+    addToCart?.(food, quantity);
     showToast("Successfully added to cart!", "green");
   };
 
@@ -39,12 +42,12 @@ export default function ({ params }: any) {
           <motion.button
             whileTap={{ scale: 0.8 }}
             onClick={() => {
-            toggleFavorite(food.id);
-            showToast(
-              isFavorite ? "Removed from favorites!" : "Added to favorites!",
-              isFavorite ? "red" : "green"
-            );
-          }}
+              toggleFavorite?.(food.id);
+              showToast(
+                isFavorite ? "Removed from favorites!" : "Added to favorites!",
+                isFavorite ? "red" : "green"
+              );
+            }}
             className="absolute top-5 right-5"
           >
             <Image
@@ -58,9 +61,9 @@ export default function ({ params }: any) {
 
           {/* Food Image */}
           <div className="md:w-1/2">
-            <Image
-              src={food.img}
-              alt={food.alt}
+            <img
+              src={food.image}
+              alt={food.name}
               width={600}
               height={400}
               className="rounded-xl object-cover"
@@ -72,7 +75,7 @@ export default function ({ params }: any) {
             <div>
               <h1 className="text-3xl font-bold mb-2">{food.name}</h1>
               <p className="text-sm text-gray-500 flex items-center gap-2">
-                <span>🍴</span> Cananimus Inc.
+                <span>🍴</span> SpotG.
               </p>
             </div>
 

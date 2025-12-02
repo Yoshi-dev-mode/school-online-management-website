@@ -81,7 +81,7 @@ export default function CartPage() {
                     />
 
                     <img
-                      src={item.img}
+                      src={item.image}
                       alt={item.alt}
                       className="w-20 h-20 rounded-lg object-cover border"
                     />

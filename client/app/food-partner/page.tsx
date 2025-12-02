@@ -12,8 +12,15 @@ export default function PartnersPage() {
 
   const { food_pictures } = ctx;
 
-  // 🔥 GET ALL UNIQUE PARTNERS
-  const partners = [...new Set(food_pictures.map(item => item.partner))];
+  // 🔥 Get one food per partner
+  const partnersMap = new Map<string, any>();
+  food_pictures.forEach((food, index) => {
+    if (!partnersMap.has(food.partner)) {
+      partnersMap.set(food.partner, { ...food, original_index: index });
+    }
+  });
+
+  const partners = Array.from(partnersMap.values());
 
   return (
     <main>
@@ -21,31 +28,21 @@ export default function PartnersPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {partners.length > 0 ? (
-          partners.map((food:any) => {
-            const original_index = food_pictures.indexOf(food)
-            return (
-            <Link href={`/chosen_food/${original_index}`} key={original_index}>
-              <div
-                className="relative group overflow-hidden rounded-2xl shadow-lg cursor-pointer"
-              >
-              
+          partners.map((food) => (
+            <Link href={`/`} key={food.original_index}>
+              <div className="relative group overflow-hidden rounded-2xl shadow-lg cursor-pointer">
                 <Image
-                  src={food.img}
-                  alt={food.alt}
-                  className="object-cover transition duration-500 group-hover:brightness-30"
+                  src='/spotg.png' // make sure your food object has 'image' property
+                  alt={food.name}
+                  className="object-cover transition duration-500"
                   height={350}
                   width={350}
-                  
                 />
-
                 {/* Overlay with Name + Price */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-semibold opacity-0 group-hover:opacity-100 transition duration-500" >
-                  <span className="text-2xl">{food.name}</span>
-                  <span className="text-lg text-main-red">₱{food.price}</span>
-                </div>
+            
               </div>
             </Link>
-          )})
+          ))
         ) : (
           <p className="text-gray-500 col-span-full text-center text-lg">
             No food found.

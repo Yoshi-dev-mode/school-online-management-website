@@ -8,9 +8,9 @@ import { Context } from "../layout"
 
 export default function Favorites(){
     const [search, setSearch] = useState("");
-    const {food_pictures} = useContext(Context) || [];
+    const {food_pictures}:any = useContext(Context) || [];
 
-        // 1. First filter for favorites (favorite: true)
+    // 1. First filter for favorites (favorite: true)
     const favoriteFoods = food_pictures.filter((food:any) => food.favorite === true);
 
     // 2. Then apply search filtering
@@ -43,14 +43,14 @@ export default function Favorites(){
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         
         {filteredFoods.length > 0 ? (
-          filteredFoods.map((food, i) => (
+          filteredFoods.map((food:any, i:number) => (
             <Link href={`/chosen_food/${i}`} key={i}>
               <div
                 className="relative group overflow-hidden rounded-2xl shadow-lg cursor-pointer"
               >
               
-                <Image
-                  src={food.img}
+                <img
+                  src={food.image}
                   alt={food.alt}
                   className="object-cover transition duration-500 group-hover:brightness-30"
                   height={350}
